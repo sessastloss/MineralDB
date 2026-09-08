@@ -124,6 +124,12 @@ table.data td.val { white-space: nowrap; }
 .bar-cell { position: relative; min-width: 120px; }
 .bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
 .note, .src { color: var(--muted); font-size: 13px; margin: 6px 0; }
+.doi-link {
+  color: var(--accent2); text-decoration: none; font-size: 12px;
+  border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; margin-left: 4px;
+  white-space: nowrap;
+}
+.doi-link:hover { border-color: var(--accent2); filter: brightness(1.3); }
 .detail-actions { display: flex; gap: 8px; margin-top: 20px; }
 
 /* 表單 */
