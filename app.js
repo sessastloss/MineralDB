@@ -210,8 +210,19 @@ function render() {
 /* ── 詳情 ── */
 function refsFor(m) {
   if (CORE_REFS[m.id] && CORE_REFS[m.id].length) return CORE_REFS[m.id];
-  const def = CORE_REFS["_default_" + catKey(m.category)];
-  return def && def.length ? def : CORE_REFS._default_general;
+  const k = catKey(m.category);
+  const def =
+    (k === "cat_neso" || k === "cat_ino" || k === "cat_phyllo" || k === "cat_tecto" || k === "cat_cyclo") ? CORE_REFS["_default_silicate"] :
+    (k === "cat_oxide") ? CORE_REFS["_default_oxide"] :
+    (k === "cat_sulfide") ? CORE_REFS["_default_sulfide"] :
+    CORE_REFS["_default_non_silicate"];
+  return def || CORE_REFS["_default_general"];
+}
+function refLinkHTML(r) {
+  const href = r.doi ? "https://doi.org/" + r.doi : r.url;
+  if (!href) return "";
+  const label = r.doi ? "DOI \u2197" : "Link \u2197";
+  return ` <a class="doi-link" target="_blank" rel="noopener" href="${href}">[${label}]</a>`;
 }
 function openDetail(id) {
   const m = getEntry(id);
@@ -244,7 +255,7 @@ function openDetail(id) {
     ${rows(m.traces, "detail_traces")}
     ${m.note ? `<div class="sec-title">${t("detail_note")}</div><p class="note">${esc(locale === "en" ? m.note : locale === "zh-Hans" ? t2s(m.note) : m.note)}</p>` : ""}
     <div class="sec-title">${t("detail_refs")}</div>
-    ${refs.map(r => `<p class="src">· ${esc(r)}</p>`).join("")}
+    ${refs.map(r => `<p class="src">· ${esc(r.c)}${refLinkHTML(r)}</p>`).join("")}
     ${m.src ? `<p class="src">（${t("detail_note")}：${esc(locale === "en" ? m.src : locale === "zh-Hans" ? t2s(m.src) : m.src)}）</p>` : ""}
     <div class="detail-actions">
       <button class="btn primary" onclick="openForm('${m.id}')">${t("btn_edit")}</button>
@@ -345,16 +356,28 @@ document.getElementById("mineralForm").addEventListener("submit", e => {
 });
 
 /* ── 匯入 / 匯出 ── */
-document.getElementById("btnExport").onclick = () => {
-  const blob = new Blob([JSON.stringify({
+function buildExportJSON() {
+  return JSON.stringify({
     type: "mineraldb-export", version: 1,
     exportedAt: new Date().toISOString(),
+    app: "MineralDB",
+    customCount: store.custom.length,
     custom: store.custom, override: store.override, hidden: store.hidden,
-  }, null, 2)], { type: "application/json" });
+  }, null, 2);
+}
+function downloadTextFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "mineraldb-custom-" + new Date().toISOString().slice(0, 10) + ".json";
-  a.click(); URL.revokeObjectURL(a.href);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  // 延遲釋放，避免下載尚未開始就被取消（會導致導出空文件）
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+document.getElementById("btnExport").onclick = () => {
+  downloadTextFile("mineraldb-custom-" + new Date().toISOString().slice(0, 10) + ".json", buildExportJSON(), "application/json");
   toast(t("toast_exported"));
 };
 document.getElementById("btnImport").onclick = () => document.getElementById("fileImport").click();
@@ -562,11 +585,7 @@ function downloadTemplate() {
     "英文名,中文名,別名,化學式,分類,主量元素,微量元素,資料來源,備註\n" +
     'Zircon,鋯石,Zrn,ZrSiO4,島狀矽酸鹽,"SiO2=32; ZrO2=67; HfO2=1.5","Hf=0.5-2 wt%; U=10-4000 ppm",未發表，EMP+LA-ICP-MS,示例行可刪除\n' +
     'Pyrite,黃鐵礦,Py,FeS2,硫化物,"Fe=45.5; S=53.5","Co=10-5000 ppm; Au=0.01-500 ppm",本實驗室數據,';
-  const blob = new Blob([tpl], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "mineraldb-import-template.csv";
-  a.click(); URL.revokeObjectURL(a.href);
+  downloadTextFile("mineraldb-import-template.csv", tpl, "text/csv;charset=utf-8");
 }
 
 document.getElementById("btnBatch").onclick = () => {
