@@ -493,12 +493,12 @@ const CORE_REFS = {
   ],
   "rutile": [
     "Meinhold, G. (2010) Rutile and its applications in earth sciences. Earth-Science Reviews 102, 1-28.",
-    "Zack, T., Kronz, A., Foley, S.F. & Rivers, T. (2004) Chemical Geology 209 (Zr-in-rutile thermometry calibration).",
+    "Zack, T., Moraes, R. & Kronz, A. (2004) Temperature dependence of Zr in rutile: empirical calibration of a rutile thermometer. Contributions to Mineralogy and Petrology 148(4), 471-488.",
     "Mindat.org; RRUFF",
   ],
   "magnetite": [
     "Dupuis, C. & Beaudoin, G. (2011) Discriminant diagrams for iron oxide trace element fingerprinting of mineral deposit types. Mineralium Deposita 46, 319-335.",
-    "Nadoll, P., Mauk, J.L., Hayes, T.S., Koenig, A.E. & O'Neill, U.S. (2014) Geochemistry of magnetite from hydrothermal ore deposits and host rocks of the Mesoproterozoic Belt Supergroup, United States. Ore Geology Reviews 61, 1-19.",
+    "Nadoll, P., Angerer, T., Mauk, J.L., French, D. & Walshe, J. (2014) The chemistry of hydrothermal magnetite: a review. Ore Geology Reviews 61, 1-32.",
   ],
   "sphalerite": [
     "Cook, N.J., Ciobanu, C.L., Pring, A., Skinner, W., Shimizu, M., Danyushevsky, L., Saini-Eiduk, B. & Melcher, F. (2009) Trace and minor elements in sphalerite: A LA-ICPMS study. Geochimica et Cosmochimica Acta 73, 4761-4791.",
@@ -517,7 +517,7 @@ const CORE_REFS = {
     "Williams, M.L., Jercinovic, M.J. & Hetherington, C.J. (2007) Microprobe monazite geochronology: Understanding geologic processes by integrating composition and chronology. Annual Review of Earth and Planetary Sciences 35, 137-175.",
   ],
   "tourmaline-schorl": [
-    "Henry, D.J. & Guidotti, C.V. (1985) American Mineralogist 70, 1-15 (tourmaline composition as indicator of formation environment).",
+    "Henry, D.J. & Guidotti, C.V. (1985) Tourmaline as a petrogenetic indicator mineral: an example from the staurolite-grade metapelites of NW Maine. American Mineralogist 70(1-2), 1-15.",
     "Henry, D.J., Novak, M., Hawthorne, F.C., Ertl, A., Dutrow, B.L., Uher, P. & Pezzotta, F. (2011) Nomenclature of the tourmaline-supergroup minerals. American Mineralogist 96, 895-913.",
   ],
   "elbaite": [
@@ -558,60 +558,60 @@ const CORE_REFS = {
   // 分類默認出處（主要成分數據的標準彙編）
   "_default_cat_neso": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_ino": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_phyllo": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_tecto": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_cyclo": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_oxide": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_sulfide": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_sulfate": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_carbonate": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_phosphate": [
     "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_halide": [
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_native": [
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1995-2003) Handbook of Mineralogy. Mineral Data Publishing.",
+    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
     "Mindat.org; RRUFF",
   ],
   "_default_cat_other": [
