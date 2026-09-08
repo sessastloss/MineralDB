@@ -1,2 +1,19 @@
-# MineralDB
-礦物化學成分資料庫：111 種常見礦物的化學式、主量元素與微量元素參考數據，支持全稱/簡稱/化學式/元素搜索，可自行添加未發表數據並批量導入 CSV/Excel | Mineral chemistry reference database: formula, major &amp; trace element data, search by name/abbrev/formula/element, CSV/Excel batch import
+# MineralDB · 礦物化學成分資料庫
+
+一個純前端、免安裝的礦物化學成分參考資料庫。線上使用：**https://sessastloss.github.io/MineralDB/**
+
+## 功能
+
+- **111 種常見礦物**的化學式、中英文全稱、簡稱/別名與分類（矽酸鹽、氧化物、硫化物、碳酸鹽、磷酸鹽、硫酸鹽、鹵化物、自然元素等）
+- 每個條目含**主量元素**（氧化物 wt% 典型值/範圍）與**微量元素**（典型 ppm/wt% 範圍），並附參考來源說明
+- **多維度搜索**：英文全稱（Zircon）、中文名（鋯石）、簡稱（Zrn / Qtz / Kfs）、化學式（SiO2）、元素符號（搜 Nb 列出所有含鈮礦物）
+- **自行添加未公開發表數據**：逐條錄入或批量導入 CSV / TSV / Excel(.xlsx)，支持自動去重、行級錯誤報告，並提供 CSV 模板下載
+- 自訂數據保存在瀏覽器 localStorage，支持 JSON 匯出／匯入備份遷移；內建條目可編輯修正、可隱藏
+
+## 數據說明
+
+內建條目為公開文獻（Mindat.org、RRUFF 及常見岩石學/礦床學教科書）中常見的**代表性參考範圍值**，僅供快速查閱，不等同於任一具體產地的實測數據；正式引用請以原始文獻為準。
+
+## 技術
+
+純靜態單頁應用（HTML/CSS/JS，無框架、無構建、離線可用）；Excel 解析按需從 CDN 加載 SheetJS。部署於 GitHub Pages。
