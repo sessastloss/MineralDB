@@ -1,18 +1,85 @@
-/* MineralDB · 應用邏輯（純前端，無外部依賴） */
+/* MineralDB · 應用邏輯（純前端，無外部依賴，支持三語） */
 "use strict";
 
 const LS_CUSTOM = "mineraldb.custom.v1";
 const LS_OVERRIDE = "mineraldb.override.v1";
 const LS_HIDDEN = "mineraldb.hidden.v1";
+const LS_LOCALE = "mineraldb.locale.v1";
 
 const store = {
   custom: [],      // 用戶自建條目
-  override: {},    // id -> 覆蓋內容（含編輯過的內建條目）
-  hidden: [],      // 用戶刪除的內建條目 id
+  override: {},    // id -> 覆蓋內容
+  hidden: [],      // 被隱藏的內建條目 id
 };
-let editingId = null;   // 當前編輯的條目 id（null = 新增）
+let editingId = null;
 let currentQuery = "";
-let currentCat = "全部";
+let currentCat = "__all__";
+let locale = "zh-Hant";
+try { locale = localStorage.getItem(LS_LOCALE) || "zh-Hant"; } catch { locale = "zh-Hant"; }
+if (!I18N[locale]) locale = "zh-Hant";
+
+/* ── i18n ── */
+function ensureHans() {
+  if (!Object.keys(I18N["zh-Hans"]).length) {
+    for (const [k, v] of Object.entries(I18N["zh-Hant"])) {
+      I18N["zh-Hans"][k] = t2s(v).replace(/汇出/g, "导出").replace(/汇入/g, "导入").replace(/搜寻/g, "搜索");
+    }
+  }
+}
+function t(key) { return (I18N[locale] && I18N[locale][key]) || I18N["zh-Hant"][key] || key; }
+function fmt(key, params) {
+  let s = t(key);
+  for (const [k, v] of Object.entries(params || {})) s = s.replace("{" + k + "}", v);
+  return s;
+}
+const CAT_KEYS = {
+  "島狀矽酸鹽": "cat_neso", "鏈狀矽酸鹽": "cat_ino", "層狀矽酸鹽": "cat_phyllo",
+  "架狀矽酸鹽": "cat_tecto", "環狀矽酸鹽": "cat_cyclo", "氧化物": "cat_oxide",
+  "硫化物": "cat_sulfide", "硫酸鹽": "cat_sulfate", "碳酸鹽": "cat_carbonate",
+  "磷酸鹽": "cat_phosphate", "鹵化物": "cat_halide", "自然元素": "cat_native", "其他": "cat_other",
+};
+function catKey(cat) { return CAT_KEYS[cat] || "cat_other"; }
+function catDisplay(cat) { return t(catKey(cat)); }
+function nameFor(m) {
+  if (locale === "en") return { main: m.en || m.zh, sub: m.zh ? t2s(m.zh) : "" };
+  if (locale === "zh-Hans") return { main: m.zh ? t2s(m.zh) : m.en, sub: m.en };
+  return { main: m.zh || m.en, sub: m.en };
+}
+
+function applyI18n() {
+  ensureHans();
+  document.documentElement.lang = locale;
+  document.title = "MineralDB · " + t("tagline");
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll("[data-i18n-title]").forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  // 分類下拉
+  const sel = document.getElementById("catSelect");
+  if (sel) {
+    const prev = sel.value;
+    sel.innerHTML = "";
+    Object.values(CAT_KEYS).forEach(k => {
+      const opt = document.createElement("option");
+      opt.value = Object.keys(CAT_KEYS).find(kk => CAT_KEYS[kk] === k);
+      opt.textContent = t(k);
+      sel.appendChild(opt);
+    });
+    if (prev) sel.value = prev;
+  }
+  // 批量導入說明表
+  const bt = document.getElementById("batchHelpTable");
+  if (bt) {
+    const rows = [
+      ["bh_en", "bh_en_h"], ["bh_formula", "bh_formula_h"], ["bh_zh", "bh_zh_h"],
+      ["bh_aliases", "bh_aliases_h"], ["bh_cat", "bh_cat_h"], ["bh_majors", "bh_majors_h"],
+      ["bh_traces", "bh_traces_h"], ["bh_src", "bh_src_h"], ["bh_note", "bh_note_h"],
+    ];
+    bt.innerHTML = `<tr><th>${t("bh_field")}</th><th>${t("bh_header")}</th></tr>` +
+      rows.map(([a, b]) => `<tr><td>${t(a)}</td><td>${t(b)}</td></tr>`).join("");
+  }
+  document.getElementById("langSel").value = locale;
+}
 
 /* ── 儲存 ── */
 function loadStore() {
@@ -43,9 +110,7 @@ function getAllEntries() {
   const custom = store.custom.map(m => entryToObj(Object.assign({}, m, store.override[m.id] || {}, { custom: true })));
   return builtin.concat(custom);
 }
-function getEntry(id) {
-  return getAllEntries().find(m => m.id === id) || null;
-}
+function getEntry(id) { return getAllEntries().find(m => m.id === id) || null; }
 
 /* ── 工具 ── */
 const norm = s => (s || "").toString().toLowerCase().trim();
@@ -53,31 +118,34 @@ function formulaHTML(f) {
   return f
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/·/g, " · ")
-    .replace(/(\d+(?:\.\d+)?)/g, "<sub>$1</sub>")
-    .replace(/₂|₃|₄|₅|₆|₈/g, m => m); // 保留既有下標
+    .replace(/(\d+(?:\.\d+)?)/g, "<sub>$1</sub>");
 }
 function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function toast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.hidden = false;
-  clearTimeout(t._tm); t._tm = setTimeout(() => { t.hidden = true; }, 2200);
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.hidden = false;
+  clearTimeout(el._tm); el._tm = setTimeout(() => { el.hidden = true; }, 2200);
 }
 
-/* 搜尋匹配：全稱 / 中文 / 簡稱 / 化學式 / 元素 */
+/* 搜尋：全稱（三語）/ 簡稱 / 化學式 / 元素 */
 function matches(entry, q) {
   const query = norm(q);
   if (!query) return true;
-  const fields = [entry.en, entry.zh, entry.formula, entry.category,
-    entry.aliases.join(" "), entry.src, entry.note];
+  const zhHans = t2s(entry.zh);
+  const fields = [
+    entry.en, entry.zh, zhHans, entry.formula,
+    entry.aliases.join(" "), t2s(entry.aliases.join(" ")),
+    entry.category, catDisplay(entry.category), "Nesosilicates Inosilicates Phyllosilicates Tectosilicates Cyclosilicates Oxides Sulfides Sulfates Carbonates Phosphates Halides Native elements".includes(catDisplay(entry.category)) ? catDisplay(entry.category) : "",
+    entry.src, entry.note, t2s(entry.note),
+  ];
   if (fields.some(f => norm(f).includes(query))) return true;
-  // 化學式搜尋：去掉下標與空格後比對
   const flat = s => norm(s).replace(/[₀-₉\s]/g, "").replace(/·/g, "");
   if (entry.formula && flat(entry.formula).includes(flat(query))) return true;
-  // 元素搜尋：1~3 個字元的精確元素符號或氧化物名
   const elq = query.replace(/₂|₃|₄|₅|₆|₈/g, m => "234568"[m.charCodeAt(0) - 0x2080] || "");
   if (/^[a-z]{1,2}$/.test(elq)) {
     const inMajors = entry.majors.some(r => norm(r[0]).replace(/[0-9]/g, "").startsWith(elq));
-    const inTraces = entry.traces.some(r => norm(r[0]).split(/[\s/、,，]/).includes(elq) ||
+    const inTraces = entry.traces.some(r =>
+      norm(r[0]).split(/[\s/、,，]/).includes(elq) ||
       norm(r[0]).replace(/[0-9]/g, "").startsWith(elq));
     if (inMajors || inTraces) return true;
   }
@@ -86,13 +154,18 @@ function matches(entry, q) {
 
 /* ── 渲染 ── */
 function renderCategories() {
-  const cats = ["全部", ...new Set(getAllEntries().map(m => m.category).sort((a, b) => a.localeCompare(b, "zh")))];
+  const cats = [...new Set(getAllEntries().map(m => m.category))].sort((a, b) => catDisplay(a).localeCompare(catDisplay(b), locale));
   const bar = document.getElementById("catBar");
   bar.innerHTML = "";
+  const allChip = document.createElement("button");
+  allChip.className = "chip" + (currentCat === "__all__" ? " active" : "");
+  allChip.textContent = t("cat_all");
+  allChip.onclick = () => { currentCat = "__all__"; render(); };
+  bar.appendChild(allChip);
   cats.forEach(c => {
     const chip = document.createElement("button");
     chip.className = "chip" + (c === currentCat ? " active" : "");
-    chip.textContent = c;
+    chip.textContent = catDisplay(c);
     chip.onclick = () => { currentCat = c; render(); };
     bar.appendChild(chip);
   });
@@ -102,31 +175,32 @@ function render() {
   renderCategories();
   const all = getAllEntries();
   const list = all
-    .filter(m => (currentCat === "全部" || m.category === currentCat))
+    .filter(m => (currentCat === "__all__" || m.category === currentCat))
     .filter(m => matches(m, currentQuery))
-    .sort((a, b) => (a.custom - b.custom) || a.en.localeCompare(b.en));
+    .sort((a, b) => (a.custom - b.custom) || nameFor(a).main.localeCompare(nameFor(b).main, locale));
 
-  document.getElementById("stats").innerHTML =
-    `共 <b>${all.length}</b> 個條目（內建 ${all.length - store.custom.length} ＋ 自訂 ${store.custom.length}），目前顯示 <b>${list.length}</b> 個。`;
+  const stats = document.getElementById("stats");
+  stats.innerHTML = fmt("stat_line", { total: all.length, builtin: all.length - store.custom.length, custom: store.custom.length, shown: list.length });
 
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   document.getElementById("empty").hidden = list.length > 0;
 
   list.forEach(m => {
+    const nm = nameFor(m);
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
       <div class="head">
-        <span class="en">${esc(m.en)}</span>
-        <span class="zh">${esc(m.zh)}</span>
+        <span class="en">${esc(nm.main)}</span>
+        <span class="zh">${esc(nm.sub)}</span>
       </div>
       <div class="formula">${formulaHTML(m.formula)}</div>
       <div class="meta">
-        <span class="badge cat">${esc(m.category)}</span>
+        <span class="badge cat">${esc(catDisplay(m.category))}</span>
         ${m.aliases.length ? `<span class="badge">${esc(m.aliases.slice(0, 3).join(" / "))}</span>` : ""}
-        ${m.custom ? '<span class="badge custom">自訂</span>' : ""}
-        ${store.override[m.id] ? '<span class="badge custom">已編輯</span>' : ""}
+        ${m.custom ? `<span class="badge custom">${t("badge_custom")}</span>` : ""}
+        ${store.override[m.id] ? `<span class="badge custom">${t("badge_edited")}</span>` : ""}
       </div>`;
     card.onclick = () => openDetail(m.id);
     grid.appendChild(card);
@@ -134,62 +208,72 @@ function render() {
 }
 
 /* ── 詳情 ── */
+function refsFor(m) {
+  if (CORE_REFS[m.id] && CORE_REFS[m.id].length) return CORE_REFS[m.id];
+  const def = CORE_REFS["_default_" + catKey(m.category)];
+  return def && def.length ? def : CORE_REFS._default_general;
+}
 function openDetail(id) {
   const m = getEntry(id);
   if (!m) return;
   const majorMax = Math.max(...m.majors.map(r => parseFloat(r[1])) || [1], 1);
-  const rows = (arr, head) => arr.length ? `
-    <div class="sec-title">${head}</div>
+  const rows = (arr, headKey) => arr.length ? `
+    <div class="sec-title">${t(headKey)}</div>
     <table class="data">
-      <tr><th>組分 / 元素</th><th>典型含量</th><th>相對丰度</th></tr>
+      <tr><th>${t("col_comp")}</th><th>${t("col_typical")}</th><th>${t("col_bar")}</th></tr>
       ${arr.map(r => `
         <tr>
           <td class="el">${esc(r[0])}</td>
           <td class="val">${esc(r[1])}</td>
           <td class="bar-cell"><div class="bar" style="width:${Math.min(100, Math.max(6, (parseFloat(r[1]) / majorMax) * 100))}%"></div></td>
         </tr>`).join("")}
-    </table>` : `<div class="sec-title">${head}</div><p class="note">暫無資料，可在編輯中補充。</p>`;
+    </table>` : `<div class="sec-title">${t(headKey)}</div><p class="note">${t("no_data")}</p>`;
 
+  const refs = refsFor(m);
   document.getElementById("detailBody").innerHTML = `
     <div class="detail-head">
-      <h2>${esc(m.en)} <span class="sub">${esc(m.zh)}</span></h2>
+      <h2>${esc(nameFor(m).main)} <span class="sub">${esc(nameFor(m).sub)}</span></h2>
       <div class="formula">${formulaHTML(m.formula)}</div>
       <div class="sub">
-        <span class="badge cat">${esc(m.category)}</span>
-        ${m.custom ? '<span class="badge custom">自訂條目（未公開發表）</span>' : '<span class="badge">內建參考條目</span>'}
-        ${m.aliases.length ? `<span class="badge">別名：${esc(m.aliases.join("、"))}</span>` : ""}
+        <span class="badge cat">${esc(catDisplay(m.category))}</span>
+        ${m.custom ? `<span class="badge custom">${t("badge_custom_detail")}</span>` : `<span class="badge">${t("badge_builtin")}</span>`}
+        ${m.aliases.length ? `<span class="badge">${t("badge_refs")}：${esc(m.aliases.join("、"))}</span>` : ""}
       </div>
     </div>
-    ${rows(m.majors, "主量元素（氧化物 wt%）")}
-    ${rows(m.traces, "微量元素")}
-    ${m.note ? `<div class="sec-title">備註</div><p class="note">${esc(m.note)}</p>` : ""}
-    ${m.src ? `<div class="sec-title">資料來源</div><p class="src">${esc(m.src)}</p>` : ""}
+    ${rows(m.majors, "detail_majors")}
+    ${rows(m.traces, "detail_traces")}
+    ${m.note ? `<div class="sec-title">${t("detail_note")}</div><p class="note">${esc(locale === "en" ? m.note : locale === "zh-Hans" ? t2s(m.note) : m.note)}</p>` : ""}
+    <div class="sec-title">${t("detail_refs")}</div>
+    ${refs.map(r => `<p class="src">· ${esc(r)}</p>`).join("")}
+    ${m.src ? `<p class="src">（${t("detail_note")}：${esc(locale === "en" ? m.src : locale === "zh-Hans" ? t2s(m.src) : m.src)}）</p>` : ""}
     <div class="detail-actions">
-      <button class="btn primary" onclick="openForm('${m.id}')">編輯</button>
+      <button class="btn primary" onclick="openForm('${m.id}')">${t("btn_edit")}</button>
       ${m.custom
-        ? `<button class="btn danger" onclick="deleteCustom('${m.id}')">刪除此自訂條目</button>`
-        : `<button class="btn danger" onclick="hideBuiltin('${m.id}')">隱藏此內建條目</button>`}
+        ? `<button class="btn danger" onclick="deleteCustom('${m.id}')">${t("btn_delete")}</button>`
+        : `<button class="btn danger" onclick="hideBuiltin('${m.id}')">${t("btn_hide")}</button>`}
     </div>`;
   document.getElementById("modalDetail").hidden = false;
 }
 
 function deleteCustom(id) {
-  if (!confirm("確定刪除此自訂條目？此操作不可復原。")) return;
+  if (!confirm(t("confirm_delete"))) return;
   store.custom = store.custom.filter(m => m.id !== id);
   delete store.override[id];
-  saveStore(); closeModals(); render(); toast("已刪除");
+  saveStore(); closeModals(); render(); toast(t("toast_deleted"));
 }
 function hideBuiltin(id) {
-  if (!confirm("從列表中隱藏此內建條目？（可透過匯出檔管理，重新整理後仍隱藏）")) return;
+  if (!confirm(t("confirm_hide"))) return;
   if (!store.hidden.includes(id)) store.hidden.push(id);
-  saveStore(); closeModals(); render(); toast("已隱藏");
+  saveStore(); closeModals(); render(); toast(t("toast_hidden"));
 }
 
 /* ── 表單 ── */
 function rowHTML(type, name = "", val = "") {
+  const ph1 = t(type === "major" ? "row_major_ph" : "row_trace_ph");
+  const ph2 = t(type === "major" ? "row_major_val_ph" : "row_trace_val_ph");
   return `<div class="row" data-type="${type}">
-    <input placeholder="${type === "major" ? "氧化物，如 SiO2" : "元素，如 Nb"}" value="${esc(name)}">
-    <input placeholder="${type === "major" ? "wt%，如 65.2 或 60–70" : "含量，如 100–500 ppm"}" value="${esc(val)}">
+    <input placeholder="${esc(ph1)}" value="${esc(name)}">
+    <input placeholder="${esc(ph2)}" value="${esc(val)}">
     <button type="button" class="icon-btn" onclick="this.parentElement.remove()">✕</button>
   </div>`;
 }
@@ -203,7 +287,7 @@ function openForm(id = null) {
   f.reset();
   document.getElementById("majorRows").innerHTML = "";
   document.getElementById("traceRows").innerHTML = "";
-  document.getElementById("formTitle").textContent = id ? "編輯礦物條目" : "添加礦物條目（未公開發表資料）";
+  document.getElementById("formTitle").textContent = id ? t("form_edit_title") : t("form_add_title");
 
   if (id) {
     const m = getEntry(id);
@@ -239,7 +323,7 @@ document.getElementById("mineralForm").addEventListener("submit", e => {
     aliases: fd.get("aliases").split(/[,，、]/).map(s => s.trim()).filter(Boolean),
     formula: fd.get("formula").trim(),
     category: fd.get("category"),
-    src: fd.get("src").trim() || (editingId ? undefined : "未公開發表 / 用戶自建"),
+    src: fd.get("src").trim() || (editingId ? undefined : t("src_user_default")),
     note: fd.get("note").trim(),
     majors: collectRows("major"),
     traces: collectRows("trace"),
@@ -247,16 +331,15 @@ document.getElementById("mineralForm").addEventListener("submit", e => {
 
   if (editingId) {
     store.override[editingId] = Object.assign({}, store.override[editingId], data);
-    toast("已更新（修改儲存於本機）");
+    toast(t("toast_updated"));
   } else {
     data.id = "u-" + Date.now().toString(36);
     data.custom = true;
     store.custom.push(data);
-    toast("已添加自訂條目");
+    toast(t("toast_added"));
   }
   saveStore(); closeModals(); currentQuery = ""; document.getElementById("search").value = "";
   render();
-  // 重新打開詳情，讓用戶立刻看到結果
   const newId = editingId || store.custom[store.custom.length - 1].id;
   openDetail(newId);
 });
@@ -272,7 +355,7 @@ document.getElementById("btnExport").onclick = () => {
   a.href = URL.createObjectURL(blob);
   a.download = "mineraldb-custom-" + new Date().toISOString().slice(0, 10) + ".json";
   a.click(); URL.revokeObjectURL(a.href);
-  toast("已匯出 JSON");
+  toast(t("toast_exported"));
 };
 document.getElementById("btnImport").onclick = () => document.getElementById("fileImport").click();
 document.getElementById("fileImport").onchange = e => {
@@ -282,7 +365,7 @@ document.getElementById("fileImport").onchange = e => {
   reader.onload = () => {
     try {
       const data = JSON.parse(reader.result);
-      if (data.type !== "mineraldb-export") throw new Error("格式不符");
+      if (data.type !== "mineraldb-export") throw new Error("format");
       let added = 0;
       (data.custom || []).forEach(c => {
         if (!store.custom.some(m => m.id === c.id)) { store.custom.push(c); added++; }
@@ -290,9 +373,9 @@ document.getElementById("fileImport").onchange = e => {
       Object.assign(store.override, data.override || {});
       (data.hidden || []).forEach(h => { if (!store.hidden.includes(h)) store.hidden.push(h); });
       saveStore(); render();
-      toast(`匯入完成：新增 ${added} 個自訂條目`);
+      toast(fmt("import_done", { n: added }));
     } catch (err) {
-      alert("匯入失敗：" + err.message);
+      alert(t("import_fail") + err.message);
     }
   };
   reader.readAsText(file);
@@ -323,14 +406,25 @@ document.getElementById("search").addEventListener("input", e => {
 document.getElementById("clearSearch").onclick = () => {
   document.getElementById("search").value = ""; currentQuery = ""; render();
 };
+document.getElementById("langSel").onchange = e => {
+  locale = e.target.value;
+  try { localStorage.setItem(LS_LOCALE, locale); } catch {}
+  applyI18n(); render();
+  if (!document.getElementById("modalDetail").hidden) {
+    // 刷新已打開的詳情（取最後瀏覽的條目）
+    const en = document.querySelector("#detailBody .detail-head h2");
+    if (en) { closeModals(); }
+  }
+};
 
 loadStore();
+applyI18n();
 render();
 
 /* ══ 批量匯入（CSV / TSV / Excel）══ */
 const HEADER_ALIASES = {
-  en:      ["英文名", "英文", "英文全稱", "英文名稱", "en", "name", "name_en", "english name"],
-  zh:      ["中文名", "中文", "中文名稱", "zh", "name_zh", "chinese name"],
+  en:      ["英文名", "英文", "英文全稱", "英文名稱", "英文全称", "en", "name", "name_en", "english name"],
+  zh:      ["中文名", "中文", "中文名稱", "中文名称", "zh", "name_zh", "chinese name"],
   aliases: ["別名", "别名", "簡稱", "简称", "aliases", "alias", "abbrev", "abbr"],
   formula: ["化學式", "化学式", "formula"],
   category:["分類", "分类", "category", "type"],
@@ -340,7 +434,6 @@ const HEADER_ALIASES = {
   note:    ["備註", "备注", "note", "notes", "comment", "說明", "说明"],
 };
 
-/* CSV/TSV 解析：自動識別分隔符，支援引號包褁的含分隔符/換行欄位 */
 function parseDelimitedTable(text) {
   text = text.replace(/^\uFEFF/, "");
   const firstLine = text.split(/\r?\n/)[0] || "";
@@ -367,7 +460,6 @@ function parseDelimitedTable(text) {
   return rows;
 }
 
-/* 解析「SiO2=64.8; Al2O3:18」這類鍵值串 */
 function parsePairs(s) {
   if (!s || !s.trim()) return [];
   return s.split(/[;|\n]/).map(p => p.trim()).filter(Boolean).map(p => {
@@ -377,7 +469,7 @@ function parsePairs(s) {
 }
 
 function mapHeaders(headers) {
-  const norm2 = s => norm(s).replace(/\s|_|-/g, "");
+  const norm2 = s => norm(t2s(s)).replace(/\s|_|-/g, "");
   const map = {};
   headers.forEach((h, i) => {
     const hn = norm2(h);
@@ -391,7 +483,7 @@ function mapHeaders(headers) {
 function rowToEntry(cells, map) {
   const get = f => map[f] !== undefined ? (cells[map[f]] || "").trim() : "";
   const en = get("en"), formula = get("formula");
-  if (!en || !formula) return { error: "缺少英文全稱或化學式" };
+  if (!en || !formula) return { error: t("batch_missing") };
   return {
     id: "u-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7),
     en, zh: get("zh"),
@@ -399,7 +491,7 @@ function rowToEntry(cells, map) {
     formula, category: get("category") || "其他",
     majors: parsePairs(get("majors")),
     traces: parsePairs(get("traces")),
-    src: get("src") || "批量匯入 / 未公開發表",
+    src: get("src") || t("src_batch_default"),
     note: get("note"),
     custom: true,
   };
@@ -412,7 +504,7 @@ function runBatchImport(entries, skipDup) {
   let imported = 0, skipped = 0;
   const errors = [];
   entries.forEach((e, i) => {
-    if (e.error) { errors.push(`第 ${i + 2} 行：${e.error}`); return; }
+    if (e.error) { errors.push(fmt("batch_line", { n: i + 2 }) + "：" + e.error); return; }
     const key = norm(e.en) + "|" + flatFormula(e.formula);
     if (skipDup && seen.has(key)) { skipped++; return; }
     seen.add(key);
@@ -426,7 +518,7 @@ function loadScriptOnce(src) {
   return new Promise((res, rej) => {
     if (window.XLSX) return res();
     const s = document.createElement("script");
-    s.src = src; s.onload = res; s.onerror = () => rej(new Error("無法載入 Excel 解析庫（需聯網）"));
+    s.src = src; s.onload = res; s.onerror = () => rej(new Error(t("err_load_xlsx")));
     document.head.appendChild(s);
   });
 }
@@ -434,7 +526,7 @@ function loadScriptOnce(src) {
 async function handleBatchFile(file) {
   const box = document.getElementById("batchResult");
   box.hidden = false;
-  box.innerHTML = '<span class="warn">正在解析…</span>';
+  box.innerHTML = `<span class="warn">${t("batch_parsing")}</span>`;
   try {
     let rows;
     if (/\.(xlsx|xls)$/i.test(file.name)) {
@@ -446,22 +538,22 @@ async function handleBatchFile(file) {
       const text = await file.text();
       rows = parseDelimitedTable(text);
     }
-    if (!rows.length) throw new Error("檔案內容為空");
+    if (!rows.length) throw new Error(t("err_empty_file"));
     const headers = rows[0].map(h => String(h));
     const map = mapHeaders(headers);
     if (map.en === undefined || map.formula === undefined)
-      throw new Error('表頭缺少「英文名/en」或「化學式/formula」欄位。實際表頭：' + headers.join(" | "));
+      throw new Error(t("err_bad_header") + headers.join(" | "));
     const entries = rows.slice(1).filter(r => r.some(c => String(c).trim() !== "")).map(r => rowToEntry(r.map(String), map));
     const skipDup = document.getElementById("skipDup").checked;
     const result = runBatchImport(entries, skipDup);
     box.innerHTML =
-      `<p class="ok">✔ 匯入完成：新增 <b>${result.imported}</b> 條` +
-      (result.skipped ? `，跳過重複 ${result.skipped} 條` : "") + "。</p>" +
-      (result.errors.length ? `<p class="err">${result.errors.length} 行有誤（已忽略）：</p>` +
+      `<p class="ok">${fmt("batch_done", { n: result.imported })}` +
+      (result.skipped ? fmt("batch_skipped", { n: result.skipped }) : "") + "</p>" +
+      (result.errors.length ? `<p class="err">${fmt("batch_errors", { n: result.errors.length })}</p>` +
         result.errors.slice(0, 10).map(e => `<p class="err">· ${esc(e)}</p>`).join("") : "");
-    toast(`批量匯入完成：新增 ${result.imported} 條`);
+    toast(fmt("batch_done", { n: result.imported }).replace(/<[^>]+>/g, ""));
   } catch (err) {
-    box.innerHTML = `<p class="err">匯入失敗：${esc(err.message)}</p>`;
+    box.innerHTML = `<p class="err">${t("import_fail")}${esc(err.message)}</p>`;
   }
 }
 
