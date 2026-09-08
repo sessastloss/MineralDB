@@ -54,6 +54,10 @@ body {
   background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 4px 8px;
 }
 .icon-btn:hover { color: var(--text); }
+.lang-sel {
+  padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--panel2); color: var(--text); font-size: 13px; cursor: pointer; outline: none;
+}
 
 /* ── 分類列 ── */
 .cat-bar {
