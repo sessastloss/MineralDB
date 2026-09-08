@@ -12,18 +12,23 @@
     <span class="gem">◆</span>
     <div>
       <h1>MineralDB</h1>
-      <p class="tagline">礦物化學成分參考資料庫</p>
+      <p class="tagline" data-i18n="tagline"></p>
     </div>
   </div>
   <div class="toolbar">
     <div class="search-wrap">
-      <input id="search" type="search" placeholder="搜尋全稱、簡稱、化學式或元素（如 Qtz、鋯石、ZrSiO4、Nb）…" autocomplete="off">
+      <input id="search" type="search" data-i18n-ph="search_ph" autocomplete="off">
       <button id="clearSearch" class="icon-btn" title="清空" hidden>✕</button>
     </div>
-    <button id="btnAdd" class="btn primary">＋ 添加礦物</button>
-    <button id="btnBatch" class="btn" title="從 CSV / Excel 批量導入條目">批量匯入</button>
-    <button id="btnExport" class="btn" title="匯出我的自訂資料為 JSON">匯出</button>
-    <button id="btnImport" class="btn" title="從 JSON 匯入自訂資料">匯入</button>
+    <button id="btnAdd" class="btn primary" data-i18n="btn_add">＋ 添加礦物</button>
+    <button id="btnBatch" class="btn" data-i18n="btn_batch"></button>
+    <button id="btnExport" class="btn" data-i18n="btn_export" data-i18n-title="btn_export_title"></button>
+    <button id="btnImport" class="btn" data-i18n="btn_import" data-i18n-title="btn_import_title"></button>
+    <select id="langSel" class="lang-sel" title="Language">
+      <option value="zh-Hant">繁體中文</option>
+      <option value="zh-Hans">简体中文</option>
+      <option value="en">English</option>
+    </select>
     <input id="fileImport" type="file" accept=".json,application/json" hidden>
   </div>
 </header>
@@ -34,14 +39,14 @@
   <div id="stats" class="stats"></div>
   <div id="grid" class="grid"></div>
   <div id="empty" class="empty" hidden>
-    <p>找不到符合條件的礦物。</p>
-    <p class="hint">試試英文礦物名（Zircon）、中文名（鋯石）、簡稱（Zrn）、化學式（SiO2）或元素符號（Zr）。</p>
+    <p data-i18n="no_results"></p>
+    <p class="hint" data-i18n="no_results_hint"></p>
   </div>
 </main>
 
 <footer>
-  <p>內建條目為公開文獻中常見的代表性參考值（組分範圍），僅供快速查閱，不等同於任一具體產地的實測數據；引用請以原始文獻與 Mindat.org、RRUFF 等資料庫為準。</p>
-  <p>自訂條目僅儲存在本機瀏覽器（localStorage），可隨時用「匯出／匯入」備份或遷移。</p>
+  <p data-i18n="footer_disclaimer"></p>
+  <p data-i18n="footer_local"></p>
 </footer>
 
 <!-- 詳情彈窗 -->
@@ -56,41 +61,36 @@
 <div id="modalForm" class="modal" hidden>
   <div class="modal-card wide">
     <button class="modal-close icon-btn" data-close>✕</button>
-    <h2 id="formTitle">添加礦物條目</h2>
+    <h2 id="formTitle"></h2>
     <form id="mineralForm">
       <div class="form-grid">
-        <label>英文全稱 *<input name="en" required placeholder="例如：Zircon"></label>
-        <label>中文名稱<input name="zh" placeholder="例如：鋯石"></label>
-        <label>簡稱／別名（逗號分隔）<input name="aliases" placeholder="例如：Zrn, Zr-mineral"></label>
-        <label>化學式 *<input name="formula" required placeholder="例如：ZrSiO4"></label>
-        <label>分類
-          <select name="category">
-            <option>島狀矽酸鹽</option><option>鏈狀矽酸鹽</option><option>層狀矽酸鹽</option>
-            <option>架狀矽酸鹽</option><option>環狀矽酸鹽</option><option>氧化物</option>
-            <option>硫化物</option><option>硫酸鹽</option><option>碳酸鹽</option>
-            <option>磷酸鹽</option><option>鹵化物</option><option>自然元素</option><option>其他</option>
-          </select>
+        <label><span data-i18n="f_en"></span> *<input name="en" required data-i18n-ph="f_en_ph"></label>
+        <label><span data-i18n="f_zh"></span><input name="zh" data-i18n-ph="f_zh_ph"></label>
+        <label><span data-i18n="f_aliases"></span><input name="aliases" data-i18n-ph="f_aliases_ph"></label>
+        <label><span data-i18n="f_formula"></span> *<input name="formula" required data-i18n-ph="f_formula_ph"></label>
+        <label><span data-i18n="f_category"></span>
+          <select name="category" id="catSelect"></select>
         </label>
-        <label>資料來源／文獻<input name="src" placeholder="例如：未發表，本實驗室 EMPA 數據"></label>
+        <label><span data-i18n="f_src"></span><input name="src" data-i18n-ph="f_src_ph"></label>
       </div>
 
       <fieldset>
-        <legend>主量元素（氧化物 wt%）</legend>
+        <legend data-i18n="majors_legend"></legend>
         <div id="majorRows" class="rows"></div>
-        <button type="button" class="btn small" data-addrow="major">＋ 加一行</button>
+        <button type="button" class="btn small" data-addrow="major" data-i18n="btn_addrow"></button>
       </fieldset>
 
       <fieldset>
-        <legend>微量元素（請在數值中附上單位，如 ppm 或 wt%）</legend>
+        <legend data-i18n="traces_legend"></legend>
         <div id="traceRows" class="rows"></div>
-        <button type="button" class="btn small" data-addrow="trace">＋ 加一行</button>
+        <button type="button" class="btn small" data-addrow="trace" data-i18n="btn_addrow"></button>
       </fieldset>
 
-      <label class="full">備註<textarea name="note" rows="2" placeholder="產地、樣品編號、分析方法等"></textarea></label>
+      <label class="full"><span data-i18n="f_note"></span><textarea name="note" rows="2" data-i18n-ph="f_note_ph"></textarea></label>
 
       <div class="form-actions">
-        <button type="submit" class="btn primary">儲存</button>
-        <button type="button" class="btn" data-close>取消</button>
+        <button type="submit" class="btn primary" data-i18n="btn_save"></button>
+        <button type="button" class="btn" data-close data-i18n="btn_cancel"></button>
       </div>
     </form>
   </div>
@@ -100,24 +100,13 @@
 <div id="modalBatch" class="modal" hidden>
   <div class="modal-card wide">
     <button class="modal-close icon-btn" data-close>✕</button>
-    <h2>批量匯入條目</h2>
-    <p class="note">支援 <b>CSV / TSV / Excel (.xlsx)</b>。首行為表頭，支援中文或英文欄位名：</p>
-    <table class="data">
-      <tr><th>欄位</th><th>接受的表頭名</th></tr>
-      <tr><td>英文全稱 *</td><td>英文名 / en / name</td></tr>
-      <tr><td>化學式 *</td><td>化學式 / formula</td></tr>
-      <tr><td>中文名稱</td><td>中文名 / zh</td></tr>
-      <tr><td>別名／簡稱</td><td>別名 / 簡稱 / aliases（逗號或分號分隔）</td></tr>
-      <tr><td>分類</td><td>分類 / category（留空為「其他」）</td></tr>
-      <tr><td>主量元素</td><td>主量元素 / majors，格式如 <code>SiO2=64.8; Al2O3=18.4</code></td></tr>
-      <tr><td>微量元素</td><td>微量元素 / traces，格式如 <code>Nb=100–500 ppm; Ta=50 ppm</code></td></tr>
-      <tr><td>資料來源</td><td>來源 / 資料來源 / source</td></tr>
-      <tr><td>備註</td><td>備註 / note</td></tr>
-    </table>
+    <h2 data-i18n="batch_title"></h2>
+    <p class="note" data-i18n-html="batch_desc"></p>
+    <table class="data" id="batchHelpTable"></table>
     <div class="batch-actions">
-      <button class="btn" id="btnTemplate">⬇ 下載 CSV 模板</button>
-      <label class="btn primary file-label">選擇檔案（.csv / .xlsx）<input id="fileBatch" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" hidden></label>
-      <label class="note inline"><input type="checkbox" id="skipDup" checked> 跳過與既有條目同名同式的行</label>
+      <button class="btn" id="btnTemplate" data-i18n="batch_tpl"></button>
+      <label class="btn primary file-label"><span data-i18n="batch_choose"></span><input id="fileBatch" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" hidden></label>
+      <label class="note inline"><input type="checkbox" id="skipDup" checked> <span data-i18n="batch_skipdup"></span></label>
     </div>
     <div id="batchResult" class="batch-result" hidden></div>
   </div>
@@ -125,6 +114,7 @@
 
 <div id="toast" class="toast" hidden></div>
 
+<script src="./i18n.js"></script>
 <script src="./data.js"></script>
 <script src="./app.js"></script>
 </body>
