@@ -485,139 +485,93 @@ const BUILTIN = [
 /* ══ 參考文獻（經核實的標準出處）══
  * 為具有明確文獻出處的礦物條目附上參考文獻；未單列者使用分類默認出處。
  */
+/* ══ 參考文獻（經核實的標準出處，附 DOI / 原文鏈接）══ */
 const CORE_REFS = {
-  // 指示性微量元素數據的經典專門文獻（已核實）
   "zircon": [
-    "Hoskin, P.W.O. & Schaltegger, U. (2003) The composition of zircon and igneous and metamorphic petrogenesis. Reviews in Mineralogy and Geochemistry 53, 27-62.",
-    "Mindat.org; RRUFF",
+    { c: "Hoskin, P.W.O. & Schaltegger, U. (2003) The Composition of Zircon and Igneous and Metamorphic Petrogenesis. Reviews in Mineralogy and Geochemistry 53, 27-62.", doi: "10.1515/9781501509322-005" },
+    { c: "Mindat.org; RRUFF", url: "https://www.mindat.org/" },
   ],
   "rutile": [
-    "Meinhold, G. (2010) Rutile and its applications in earth sciences. Earth-Science Reviews 102, 1-28.",
-    "Zack, T., Moraes, R. & Kronz, A. (2004) Temperature dependence of Zr in rutile: empirical calibration of a rutile thermometer. Contributions to Mineralogy and Petrology 148(4), 471-488.",
-    "Mindat.org; RRUFF",
+    { c: "Meinhold, G. (2010) Rutile and its applications in earth sciences. Earth-Science Reviews 102(1-2), 1-28.", doi: "10.1016/j.earscirev.2010.06.001" },
+    { c: "Zack, T., Moraes, R. & Kronz, A. (2004) Temperature dependence of Zr in rutile: empirical calibration of a rutile thermometer. Contributions to Mineralogy and Petrology 148(4), 471-488.", doi: "10.1007/s00410-004-0617-8" },
   ],
   "magnetite": [
-    "Dupuis, C. & Beaudoin, G. (2011) Discriminant diagrams for iron oxide trace element fingerprinting of mineral deposit types. Mineralium Deposita 46, 319-335.",
-    "Nadoll, P., Angerer, T., Mauk, J.L., French, D. & Walshe, J. (2014) The chemistry of hydrothermal magnetite: a review. Ore Geology Reviews 61, 1-32.",
+    { c: "Dupuis, C. & Beaudoin, G. (2011) Discriminant diagrams for iron oxide trace element fingerprinting of mineral deposit types. Mineralium Deposita 46(4), 319-335.", doi: "10.1007/s00126-011-0334-y" },
+    { c: "Nadoll, P., Angerer, T., Mauk, J.L., French, D. & Walshe, J. (2014) The chemistry of hydrothermal magnetite: a review. Ore Geology Reviews 61, 1-32.", doi: "10.1016/j.oregeorev.2013.12.013" },
   ],
   "sphalerite": [
-    "Cook, N.J., Ciobanu, C.L., Pring, A., Skinner, W., Shimizu, M., Danyushevsky, L., Saini-Eiduk, B. & Melcher, F. (2009) Trace and minor elements in sphalerite: A LA-ICPMS study. Geochimica et Cosmochimica Acta 73, 4761-4791.",
+    { c: "Cook, N.J., Ciobanu, C.L., Pring, A., Skinner, W., Shimizu, M., Danyushevsky, L., Saini-Eiduk, B. & Melcher, F. (2009) Trace and minor elements in sphalerite: A LA-ICPMS study. Geochimica et Cosmochimica Acta 73(16), 4761-4791.", doi: "10.1016/j.gca.2009.05.045" },
   ],
   "pyrite": [
-    "Large, R.R., Danyushevsky, L., Hollit, C. et al. (2009) Gold and trace element zonation in pyrite using a laser imaging technique. Economic Geology 104, 635-668.",
-    "Reich, M., Kesler, S.E., Utsunomiya, S., Palenik, C.S., Chryssoulis, S.L. & Brimhall, G. (2005) Solubility of gold in arsenian pyrite. Geochimica et Cosmochimica Acta 69, 2781-2796.",
+    { c: "Large, R.R. et al. (2009) Gold and trace element zonation in pyrite using a laser imaging technique. Economic Geology 104(5), 635-668.", doi: "10.2113/gsecongeo.104.5.635" },
+    { c: "Reich, M., Kesler, S.E., Utsunomiya, S., Palenik, C.S., Chryssoulis, S.L. & Brimhall, G. (2005) Solubility of gold in arsenian pyrite. Geochimica et Cosmochimica Acta 69, 2781-2796.", doi: "10.1016/j.gca.2005.01.011" },
   ],
   "apatite": [
-    "Belousova, E.A., Griffin, W.L., O'Reilly, S.Y. & Fisher, N.I. (2002) Apatite as an indicator mineral for mineral exploration: trace-element compositions and their relationship to host rock type. Journal of Geochemical Exploration 76, 45-69.",
+    { c: "Belousova, E.A., Griffin, W.L., O'Reilly, S.Y. & Fisher, N.I. (2002) Apatite as an indicator mineral for mineral exploration: trace-element compositions and their relationship to host rock type. Journal of Geochemical Exploration 76(1), 45-69.", doi: "10.1016/S0375-6742(02)00204-2" },
   ],
   "fluorite": [
-    "Schwinn, G. & Markl, G. (2005) REE systematics in hydrothermal fluorite. Chemical Geology 216, 225-248.",
+    { c: "Schwinn, G. & Markl, G. (2005) REE systematics in hydrothermal fluorite. Chemical Geology 216(3-4), 225-248.", doi: "10.1016/j.chemgeo.2004.11.012" },
   ],
   "monazite": [
-    "Williams, M.L., Jercinovic, M.J. & Hetherington, C.J. (2007) Microprobe monazite geochronology: Understanding geologic processes by integrating composition and chronology. Annual Review of Earth and Planetary Sciences 35, 137-175.",
+    { c: "Williams, M.L., Jercinovic, M.J. & Hetherington, C.J. (2007) Microprobe monazite geochronology: understanding geologic processes by integrating composition and chronology. Annual Review of Earth and Planetary Sciences 35, 137-175.", doi: "10.1146/annurev.earth.35.031306.140228" },
   ],
   "tourmaline-schorl": [
-    "Henry, D.J. & Guidotti, C.V. (1985) Tourmaline as a petrogenetic indicator mineral: an example from the staurolite-grade metapelites of NW Maine. American Mineralogist 70(1-2), 1-15.",
-    "Henry, D.J., Novak, M., Hawthorne, F.C., Ertl, A., Dutrow, B.L., Uher, P. & Pezzotta, F. (2011) Nomenclature of the tourmaline-supergroup minerals. American Mineralogist 96, 895-913.",
+    { c: "Henry, D.J. & Guidotti, C.V. (1985) Tourmaline as a petrogenetic indicator mineral: an example from the staurolite-grade metapelites of NW Maine. American Mineralogist 70(1-2), 1-15.", url: "https://pubs.geoscienceworld.org/msa/ammin/article-abstract/70/1-2/1/41651" },
+    { c: "Henry, D.J., Novak, M., Hawthorne, F.C., Ertl, A., Dutrow, B.L., Uher, P. & Pezzotta, F. (2011) Nomenclature of the tourmaline-supergroup minerals. American Mineralogist 96(5-6), 895-913.", doi: "10.2138/am.2011.3636" },
   ],
   "elbaite": [
-    "Henry, D.J. et al. (2011) Nomenclature of the tourmaline-supergroup minerals. American Mineralogist 96, 895-913.",
-    "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10.",
+    { c: "Henry, D.J. et al. (2011) Nomenclature of the tourmaline-supergroup minerals. American Mineralogist 96(5-6), 895-913.", doi: "10.2138/am.2011.3636" },
+    { c: "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10." },
   ],
-  // 偉晶岩型稀有金屬礦物
   "beryl": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
-    "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
+    { c: "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10." },
   ],
   "lepidolite": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
-    "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
+    { c: "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10." },
   ],
   "spodumene": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
-    "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
+    { c: "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10." },
   ],
   "petalite": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
-    "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
+    { c: "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10." },
   ],
   "amblygonite": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
-    "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
+    { c: "London, D. (2008) Pegmatites. Canadian Mineralogist Special Publication 10." },
   ],
   "columbite": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
   ],
   "microlite": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
   ],
   "cassiterite": [
-    "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43, 2005-2026.",
+    { c: "\u010Cern\u00FD, P. & Ercit, T.S. (2005) The classification of granitic pegmatites revisited. The Canadian Mineralogist 43(6), 2005-2026.", doi: "10.2113/gscanmin.43.6.2005" },
   ],
-
-  // 分類默認出處（主要成分數據的標準彙編）
-  "_default_cat_neso": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
+  "_default_silicate": [
+    { c: "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland, London.", url: "https://www.minersoc.org/" },
+    { c: "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.", url: "http://www.handbookofmineralogy.org/" },
+    { c: "Mindat.org; RRUFF", url: "https://www.mindat.org/" },
   ],
-  "_default_cat_ino": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
+  "_default_oxide": [
+    { c: "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland, London.", url: "https://www.minersoc.org/" },
+    { c: "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.", url: "http://www.handbookofmineralogy.org/" },
+    { c: "Mindat.org; RRUFF", url: "https://www.mindat.org/" },
   ],
-  "_default_cat_phyllo": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
+  "_default_sulfide": [
+    { c: "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland, London.", url: "https://www.minersoc.org/" },
+    { c: "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.", url: "http://www.handbookofmineralogy.org/" },
+    { c: "Mindat.org; RRUFF", url: "https://www.mindat.org/" },
   ],
-  "_default_cat_tecto": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_cyclo": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_oxide": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_sulfide": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_sulfate": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_carbonate": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_phosphate": [
-    "Deer, W.A., Howie, R.A. & Zussman, J. (2013) An Introduction to the Rock-Forming Minerals, 3rd ed. Mineralogical Society of Great Britain & Ireland.",
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_halide": [
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_native": [
-    "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.",
-    "Mindat.org; RRUFF",
-  ],
-  "_default_cat_other": [
-    "Mindat.org; RRUFF",
+  "_default_non_silicate": [
+    { c: "Anthony, J.W., Bideaux, R.A., Bladh, K.W. & Nichols, M.C. (1990-2003) Handbook of Mineralogy, Vols. I-V. Mineral Data Publishing, Tucson.", url: "http://www.handbookofmineralogy.org/" },
+    { c: "Mindat.org; RRUFF", url: "https://www.mindat.org/" },
   ],
   "_default_general": [
-    "Mindat.org; RRUFF",
+    { c: "Mindat.org; RRUFF", url: "https://www.mindat.org/" },
   ],
 };
