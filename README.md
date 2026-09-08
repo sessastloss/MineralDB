@@ -1,6 +1,6 @@
 # MineralDB · 礦物化學成分資料庫
 
-一個純前端、免安裝的礦物化學成分參考資料庫。線上使用：**https://sessastloss.github.io/MineralDB/**
+一個純前端、免安裝的礦物化學成分參考資料庫。線上使用：**https://H3w4Ng2h0U.github.io/MineralDB/**
 
 ## 功能
 
